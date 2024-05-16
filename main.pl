@@ -39,5 +39,11 @@ for my $line (@lines) {
     ### CHECK ACE TOTAL FOR SPECIFIED STORM
     # To do...
 }
+
+# Print ACE total for specified year
 print "$ACE\n";
+
+# Close file
+close($handle)
+    || die "$0: can't close $filename: $!";
 
