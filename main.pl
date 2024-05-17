@@ -5,8 +5,8 @@ use warnings;
 ################################################################################
 
 # Variables pertaining to file I/O
-my $filename = "./hurdat2-natl-latest.txt";         # File to read
 my $encoding = ":encoding(UTF-8)";                  # UTF-8 encoding for reading file
+my $filename = undef;                               # File to read
 my $handle   = undef;                               # Assigned value on successful open for future referencing
 
 # Variables to be used as constants
@@ -14,6 +14,7 @@ my @validTypes  = ("TS", "SS", "HU");               # Valid storm classification
 my @validTimes  = ("0000", "0600", "1200", "1800"); # Valid fix times
 
 # Variables to be adjusted by the user
+my $basin         = undef;                          # Basin to read HURDAT2 data from
 my $substringYear = undef;                          # Year to check for ACE total
 
 # Variables to hold acquired values
@@ -24,12 +25,28 @@ my $ACE = 0;                                        # Accumulated Cyclone Energy
 
 # Initial print statements (not looped)
 print "Thank you for using my HURDAT2 ACE calculator!\n";
-print "Current functionalities include:\n- Calculating the ACE for a certain year\nCurrent basins supports:\n- North Atlantic (NATL)\n\n";
+print "Current functionalities include:\n- Calculating the ACE for a certain year\n";
+print "Current basins supports:\n- North Atlantic (NATL)\n- Eastern Pacific (EPAC)\n\n";
 
 # Home, runs indefinitely until user exits program
 while(1) {
+    # Select basin
+    print "Please select the basin to read data from (NATL | EPAC): ";
+    $basin = uc(userInput());
+    if    ($basin eq "NATL") {$filename = "./hurdat2-natl-latest.txt";}
+    elsif ($basin eq "EPAC") {$filename = "./hurdat2-epac-latest.txt";}
+    else {
+        print "Invalid basin selected. Please try again.\n";
+        next;
+    }
+
+    # Select year
     print "Please select the year you wish to calculate the ACE total for: ";
     $substringYear = userInput();
+    if ($substringYear !~ /^\d{4}$/) {
+        print "Invalid year selected. Please try again.\n";
+        redo;
+    }
 
     @lines = readFile($filename, $encoding, $handle);   # Read HURDAT2 text file by calling subroutine
 
@@ -77,9 +94,7 @@ sub readFile {
 sub userInput {
     chomp(my $userInput = <STDIN>); # Read input from user
 
-    if ($userInput eq "exit") {     # Exit the program if user inputs "exit"
-        exit;
-    }
+    if ($userInput eq "exit") {exit;}     # Exit the program if user inputs "exit"
 
     return $userInput;
 }
