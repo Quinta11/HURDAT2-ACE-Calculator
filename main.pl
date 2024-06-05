@@ -148,9 +148,7 @@ sub calculateACE {
 # Subroutine to trim unnecessary whitespace (such as storm names from HURDAT files)
 sub trimString {
     my $string = shift;
-    #print "Original string: $string\n";
     $string =~ s/^\s*(.*?)\s*$/$1/;
-    #print "Trimmed string: $string\n";
     return $string;
 }
 
